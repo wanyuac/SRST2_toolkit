@@ -1,10 +1,11 @@
 # Find out redundant sequences in SRST2's ARG-Annot database
-# Yu Wan (wanyuac@gmail.com, https://github.com/wanyuac), 10 July 2015
+# Yu Wan (wanyuac@gmail.com, https://github.com/wanyuac), 10, 15 July 2015
 # License: GNU GPL 2.1
 
 kFILE <- "blast_argannot.txt"  # Alignment summaries in format 6 to be imported to R from megaBLAST
 kOUTPUT <- "redundant_seqs.txt"  # the file name of the output
 kSEQLEN <- "seqlen.txt"  # a list of sequence lengths described in the original ARG-Annot database
+HEADER <- c("qseqid", "sseqid", "qstart", "qend", "sstart", "send", "qlen", "slen", "length", "bitscore", "pident",	"qcovs", "gaps", "evalue")
 
 removeReplicates <- function(t) {
   # This function removes the second member of the duples: (a, b) and (b, a)
@@ -21,12 +22,17 @@ removeReplicates <- function(t) {
   return(t[marker,])
 }
 
-tab <- read.csv(kFILE, header = TRUE, sep = "\t", quote = "", stringsAsFactors = FALSE)
+tab <- read.csv(kFILE, header = FALSE, sep = "\t", quote = "", stringsAsFactors = FALSE)
+colnames(tab) <- HEADER
 sel <- (tab[,"length"] == tab[, "slen"]) & (tab[,"length"] == tab[, "qlen"]) & 
   (tab[,"pident"] == 100) & (tab[, "evalue"] <= 0.001)  # the definition of an exact match, which must have the highest bit scores
 exact.matches <- tab[sel, ]  # remove imperfect matches
 redundancy <- exact.matches[exact.matches[, "qseqid"] != exact.matches[, "sseqid"],]  # remove self-matches
-result <- removeReplicates(redundancy)
-# This relationship must be shown here: nrow(result) = 1/2 * nrow(redundancy)
-write.table(result, file = kOUTPUT, quote = FALSE, sep = "\t",
-            row.names = FALSE, col.names = TRUE)
+if (nrow(redundancy) == 0) {
+  print("No redundant sequence is found!")
+} else {
+  result <- removeReplicates(redundancy)
+  # This relationship must be shown here: nrow(result) = 1/2 * nrow(redundancy)
+  write.table(result, file = kOUTPUT, quote = FALSE, sep = "\t",
+              row.names = FALSE, col.names = TRUE)
+}
