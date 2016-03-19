@@ -1,5 +1,5 @@
 '''
-This script assign identifiers to allele variants in the compiled result of SRST2 (https://github.com/katholt/srst2) in accordance with consensus sequences clustered by cd-hit-est. Results are printed to STDOUT.
+This script assigns identifiers to allele variants in the compiled result of SRST2 (https://github.com/katholt/srst2) in accordance with consensus sequences clustered by cd-hit-est. Results are printed to STDOUT.
 
 Usage: python clustering_allele_variants.py -t <compiledResults.txt> -c <nucl.clstr> > compiledResults_clusterd.txt
 
