@@ -92,7 +92,7 @@ def read_allele_calls(files, allele_type, mlst_delimiter = "-"):
             else:
                 # fields of the content for non-MLST allele calls: Sample\tGene1\t...\tGeneN
                 genes = content[0][1 : ]  # Here, every gene ID contains a product name: [gene name]_[product]. Do not put [2 : ] here because the gene field starts at the second column.
-                allele_numbers = content[1][1 : ]  # These allele numbers are actually strings, such as "AmpH_634*" or "-", in this scenario.
+                allele_numbers = content[1][1 : ]  # Different to MLST results, these allele numbers are actually strings rather than digits, such as "AmpH_634*" or "-", in this scenario.
                 for j in range(0, len(allele_numbers)):
                     # insert an underscore character ("_") between the allele name and the internal sequence ID to fit the format of allele names in the gene database and the score file
                     # For example, "SHV-28_1298" becomes "SHV-28__1298" after this process.
