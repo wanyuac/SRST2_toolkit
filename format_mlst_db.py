@@ -9,7 +9,7 @@ Usage:
 
 Author: Yu Wan (wanyuac@gmail.com, GitHub: https://github.com/wanyuac)
 Edition history: 11/8/2016
-Python v2.7.10
+Python v3.5.2 (This is my first script in Python 3)
 License: GNU GPL 2.1
 """
 
@@ -39,9 +39,9 @@ def main():
         if not gene in genes:  # if this gene is not recorded yet
             cluster_id += 1  # assign a new cluster ID
             gene_list[gene] = cluster_id  # push the new item {gene : cluster_id} into the dictionary
-            genes = gene_list.keys()
+            genes = list(gene_list.keys())
         seq.id = "__".join([str(gene_list[gene]), gene, allele_id, str(seq_num)])  # assign a new sequence ID
-        print seq.format("fasta")  # write the current sequence to the stdout
+        print(seq.format("fasta"))  # write the current sequence to the stdout
 
 if __name__ == '__main__':
     main()
