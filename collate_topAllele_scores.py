@@ -34,8 +34,10 @@ Other notes:
     of files if these files have the same name as those of the output files. You may override previous outputs if
     there is no prefix configured.
 
+Python version: 2.7.10
+
 Author: Yu Wan (wanyuac@gmail.com)
-Development history: 8 April 2016, 17 July 2016
+Development history: 8 April 2016, 17 July 2016, 16 August 2016
 """
 
 from argparse import ArgumentParser
@@ -73,7 +75,7 @@ def read_allele_calls(files, allele_type, mlst_delimiter = "-"):
     allele_table = collections.defaultdict(dict)  # [sample][gene] = allele
     
     for file_name in files:
-        content = open(file_name, "rU").read().splitlines()
+        content = open(file_name, "rU").read().splitlines()  # read the whole file
         n_rows = len(content)
         
         if n_rows == 2:  # a proper file should always contain a header row and a value row
@@ -146,16 +148,17 @@ def merge_allele_scores(allele_table, score_files, allele_type, output_prefix):
         sample = (file_name.split(".")[0]).split("__")[-1]  # obtain the sample name from each file name
         
         genes = allele_table[sample].keys()  # a list of gene names of the current sample
-        alleles = allele_table[sample].values()  # all allele names of this sample
+        alleles = allele_table[sample].values()  # all allele names of this sample, including signs for uncertainty and variants
         
-        # create a new list of allele names without uncertainty marks to match those from the score file
+        # create a new list of allele names without uncertainty and variant marks to match those from the score file
+        # Because score files do not contain these marks.
         alleles_unsigned = copy.deepcopy(alleles)
         for i in range(0, len(alleles_unsigned)):
             alleles_unsigned[i] = re.sub("[*?]", "", alleles_unsigned[i])  # removes "*" and "?" characters from the string "allele"
         
         content = open(file_name, "rU").read().splitlines()[1 : ]  # omit the header line in every score file
         
-        # go through every line in the score file and only keep those called by SRST2
+        # filtering every score files: go through every line of each file and only keep those called by SRST2
         for line in content:
             fields = line.split("\t")
             """
@@ -170,11 +173,18 @@ def merge_allele_scores(allele_table, score_files, allele_type, output_prefix):
                     fields[0] = alleles[j]  # obtain the allele name with an uncertainty sign as the new allele name
                     print >> output_file, "\t".join([sample] + fields)  # then append this line with the sample name into the output file
             else:
-                for j in range(0, len(alleles_unsigned)):
-                    if alleles_unsigned[j] in fields[0]:  # if the former is a substring of the latter
-                        fields[0] = alleles[j]  # obtain the allele name with an uncertainty sign as the new allele name
-                        print >> output_file, "\t".join([sample] + fields)
-    
+                for j in range(0, len(alleles_unsigned)):  # go through every allele call of the current sample
+                    a = alleles_unsigned[j]
+                    b = fields[0]
+                    pos = b.find(a)  # Whether the allele name is present in the first element, and where is it?
+                    if pos != -1:  # if the former is a substring of the latter, then there may be an exact match
+                        """
+                        AadA24__1609 is found in both 229__AadA_AGly__AadA24__1609 (exact match) and
+                        229__AadA_AGly__AadA24__16091 (partial match), causing an error in the output.
+                        """
+                        if a == b[pos : ]:  # This is an exact match.
+                            fields[0] = alleles[j]  # obtain the allele name with an uncertainty sign as the new allele name
+                            print >> output_file, "\t".join([sample] + fields)
     output_file.close()
     
     return
