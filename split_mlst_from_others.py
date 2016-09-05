@@ -4,7 +4,7 @@ MLST alleles or other sorts of alleles. It is useful if you want to separate dif
 were run for MLST and genotyping simulatenously.
 
 Usage
-    python split_mlst_from_others.py -i *_samples.all_consensus_alleles.fasta -om mlst -og genes
+    python split_mlst_from_others.py -i *_samples.all_consensus_alleles.fasta -om ~/mlst -og ~/genes
 
 Options
     -i: input FASTA files
@@ -32,7 +32,7 @@ def main():
     if args.om == args.og:
         sys.exit("Output directories must be different for MLST and other genes.")
     
-    # make new folders under the current working folder
+    # make new folders at any places where possible
     if not os.path.exists(args.om):
         os.mkdir(args.om)
     if not os.path.exists(args.og):
