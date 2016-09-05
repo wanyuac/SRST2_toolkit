@@ -1,4 +1,4 @@
-'''
+"""
 This script assigns identifiers to allele variants in the compiled result of SRST2 (https://github.com/katholt/srst2) in accordance with consensus sequences clustered by cd-hit-est. Results are printed to STDOUT.
 
 Usage: python clustering_allele_variants.py -t <compiledResults.txt> -c <nucl.clstr> > compiledResults_clusterd.txt
@@ -14,14 +14,14 @@ First edition: 29 July 2015
 Last edition: 29 July 2015
 
 License: GNU GPL 2.1
-'''
+"""
 
 import collections, re
 from argparse import ArgumentParser
 
 def parse_arguments():
 	# read arguments from the command line
-	parser = ArgumentParser(description = "Read arguments: --table and --cluster")
+	parser = ArgumentParser(description = "Read arguments: -t and -c")
 	parser.add_argument("-t", type = str, required = True, help = "Allele table compiled by SRST2", default="")
 	parser.add_argument("-c", type = str, required = True, help = "List of clusters produced by cd-hit-est")
 	return parser.parse_args()
