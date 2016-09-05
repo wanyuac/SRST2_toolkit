@@ -22,7 +22,7 @@ from argparse import ArgumentParser
 def parse_arguments():
 	# read arguments from the command line
 	parser = ArgumentParser(description = "Read arguments: -t and -c")
-	parser.add_argument("-t", type = str, required = True, help = "Allele table compiled by SRST2", default="")
+	parser.add_argument("-t", type = str, required = True, help = "Allele table compiled by SRST2", default = "")
 	parser.add_argument("-c", type = str, required = True, help = "List of clusters produced by cd-hit-est")
 	return parser.parse_args()
 	
