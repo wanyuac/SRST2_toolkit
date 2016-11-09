@@ -1,4 +1,4 @@
-# SRST2_supplements
+# SRST2_toolkit
 Supplementary Python and R scripts for processing results from [SRST2](https://github.com/katholt/srst2).
 
 ## A list of scripts
